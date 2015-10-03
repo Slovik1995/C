@@ -1,0 +1,132 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+struct element
+{
+  double*tab;
+  struct element *nast;
+};
+
+double* wczytaj(int *licz_diam)
+{
+  int numer=1;
+  double *glowny, *wsk;
+  printf("Podaj liczbe diamentow: ");
+  scanf("%d", licz_diam);
+  printf("\n");
+
+
+  getchar();
+  glowny=(double*)malloc((*licz_diam) * sizeof(double));
+  wsk=glowny;
+
+  while (numer<=*licz_diam)
+  {
+  printf("Podaj cene diamentu nr %d:    ", numer);
+  scanf("%lf", wsk);
+  getchar();
+  wsk++;
+  numer++;
+  }
+  printf("\n");
+  return glowny;
+}
+
+struct element* oblicz(double * wsk2, int licz_diam)
+{
+    int numer2;
+    double *tem, *tem2;
+    struct element* wsk;
+    struct element *wsk_tmp;
+    struct element* pocz;
+    int numer=1;
+    tem=wsk2;
+
+    pocz=NULL;
+    wsk=pocz;
+    while(numer<=licz_diam)
+    {
+
+       numer2=numer;
+       wsk_tmp=(struct element*)malloc(sizeof(struct element));
+       wsk_tmp->tab=malloc(((licz_diam-numer)+1)*sizeof(double));
+       tem2=wsk_tmp->tab;
+       while(numer2<=licz_diam)
+       {
+
+            *tem2=(*wsk2+ *tem);
+
+            tem++;
+
+            tem2++;
+            numer2++;
+
+       }
+       numer++;
+       wsk2++;
+       tem=wsk2;
+
+       if (pocz==NULL) {wsk=wsk_tmp; pocz=wsk_tmp;}
+
+       else {wsk->nast=wsk_tmp; wsk=wsk->nast;}
+
+
+    }
+    wsk=NULL;
+
+
+    return pocz;
+
+  }
+
+
+void podaj(struct element*glowny, int licz_diam)
+{
+  int a,b, aa,bb, tmp;
+  struct element*wsk;
+  wsk=glowny;
+
+  while (1)
+  {
+  printf("------------------------------\n");
+  printf("Podaj numery diamentow: \n");
+  scanf("%d", &a);
+  getchar();
+  scanf("%d", &b);
+  getchar();
+  if ((a>licz_diam) || (b>licz_diam)) {printf("Nie ma takiego diamentu!\n"); continue;}
+  aa=a;
+  bb=b;
+
+  if (a>b) {tmp=b; b=a; a=tmp;};
+  a--;
+  b--;
+  while(a>0)
+  {
+    wsk=wsk->nast;
+    a--;
+    b--;
+  }
+
+  printf("\ncena diamentow nr %d i %d to %.2lf zl\n", aa, bb, *((wsk->tab)+b));
+  wsk=glowny;
+  }
+  return;
+}
+
+
+
+int main()
+{
+    double* wsk;
+    double **wsk2;
+   int licz_diam=0;
+    struct element*glowny;
+    glowny=NULL;
+   wsk=wczytaj(&licz_diam);
+    glowny=oblicz(wsk, licz_diam);
+
+    podaj(glowny, licz_diam);
+
+    return 0;
+}

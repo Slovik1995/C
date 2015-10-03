@@ -1,0 +1,97 @@
+#include<stdlib.h>
+#include<stdio.h>
+
+struct wezel
+{
+  int wiersz;
+  int kolumna;
+  double element;
+  struct wezel* nast;
+
+};
+
+zamiana(double liczba, int i, int j, struct wezel ** pocz)
+{
+  struct wezel * pom;
+ if (liczba!=0)
+    {
+      if (*pocz==NULL)
+            {
+                *pocz=malloc(sizeof(struct wezel));
+                (*pocz)->wiersz=i+1;
+                (*pocz)->kolumna=j+1;
+                (*pocz)->element=liczba;
+                (*pocz)->nast=NULL;
+            }
+       else if (*pocz !=NULL)
+            {
+                pom=*pocz;
+                while (pom->nast !=NULL) pom=pom->nast;
+                pom->nast=malloc(sizeof(struct wezel));
+                pom=pom->nast;
+                pom->wiersz=i+1;
+                pom->kolumna=j+1;
+                pom->element=liczba;
+                pom->nast=NULL;
+            }
+
+
+
+    }
+
+}
+
+void wyswietl(struct wezel* pocz)
+{
+    while (pocz!=NULL)
+        {
+            printf("[%d]", pocz->wiersz);
+            printf("[%d] = ", pocz->kolumna);
+            printf("%lf\n", pocz->element);
+
+            pocz=pocz->nast;
+        }
+
+
+}
+
+wyszukaj(struct wezel * pocz, double *max, double *min)
+    {
+     *min=*max=pocz->element;
+     while (pocz->nast!=NULL)
+            {
+                pocz=pocz->nast;
+                if (pocz->element<*min) *min=pocz->element;
+                if (pocz->element>*max) *max=pocz->element;
+            }
+
+
+    }
+
+
+
+
+int main(void)
+{
+  struct wezel *poczatek=NULL;
+
+  int i,j;
+  double max, min;
+  double tab[4][3]={1.2, 2.5, 3.1, 4.3, 0, 2.2, 0, 6.9, 1.6, 0 ,8.3 ,9.2};
+
+   for (i=0; i<4; i++)
+        {
+            for(j=0; j<3; j++)
+            {
+              zamiana(tab[i][j], i, j, &poczatek);
+
+            }
+        }
+
+
+   wyswietl(poczatek);
+wyszukaj(poczatek, &max, &min);
+printf("\nmin=%.2lf, max=%.2lf", min, max);
+getchar();
+
+}

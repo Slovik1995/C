@@ -1,0 +1,120 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+struct wezel
+{
+int wartosc;
+
+struct wezel* nastepny;
+struct wezel *poprzedni;
+};
+struct wezel *push(struct wezel* wsk)
+{
+    if (wsk==NULL)
+    {
+       wsk=malloc(sizeof(struct wezel));
+       wsk->nastepny=NULL;
+       wsk->poprzedni=NULL;
+    }
+    else
+    {
+       wsk->poprzedni=malloc(sizeof(struct wezel));
+       wsk->poprzedni->nastepny=wsk;
+       wsk=wsk->poprzedni;
+       wsk->poprzedni=NULL;
+    }
+    printf("Podaj wartosc wezla: ");
+    scanf("%d", &wsk->wartosc);
+    getchar();
+
+ return wsk;
+}
+
+pop(struct wezel* wsk)
+{
+   if (wsk!=NULL)
+   {
+     if (wsk->poprzedni !=NULL)
+        {
+          wsk=wsk->poprzedni;
+          wsk->nastepny=NULL;
+        }
+     else wsk=NULL;
+   }
+
+   else printf("Kolejka jest pusta!\n");
+
+    return wsk;
+}
+
+void wyswietl(struct wezel* wsk)
+{
+    printf("---------------------------------------------\n");
+    while (wsk!=NULL)
+    {
+      printf("%d ", wsk->wartosc);
+      wsk=wsk->poprzedni;
+    };
+    printf("\n---------------------------------------------\n");
+    return;
+}
+
+int isempty(struct wezel* wsk)
+{
+    if (wsk==NULL) return 0;
+    else return 1;
+}
+
+int isfull(int liczba)
+{
+    if (liczba<=5) return 0;
+    else return 1;
+}
+
+int main()
+{
+int wybor, i=0;
+struct wezel *glowa, *ogon;
+glowa=ogon=NULL;
+
+while(1)
+{
+
+  printf("\n1- push\n2- pop\n3- wyswietl\n4- exit\n");
+  printf("Wybierz: ");
+  scanf("%d", &wybor);
+  getchar();
+  system("cls");
+  switch (wybor)
+  {
+      case 1: if (isempty(glowa)==0)
+                 {
+                   ogon=push(ogon);
+                   glowa=ogon;
+                   i++;
+                   break;
+                 }
+              else
+                {
+                  if (isfull(i)==0)
+                  {
+                    ogon=push(ogon);
+                    i++;
+                    break;
+                  }
+                  else printf("Kolejka jest pelna!");
+                  break;
+                }
+
+      case 2: if (isempty(glowa)==1) i--;
+              glowa=pop(glowa); break;
+      case 3: wyswietl(glowa); break;
+      case 4: exit(0);
+      default: printf("Wybrales zla cyfre!");
+  }
+
+
+}
+
+    return 0;
+}

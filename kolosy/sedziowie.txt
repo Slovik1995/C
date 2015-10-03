@@ -1,0 +1,168 @@
+#include<stdlib.h>
+#include<stdio.h>
+#include<string.h>
+#include<time.h>
+
+struct sedzia
+{
+ char *nazwisko;
+ int identyfik;
+
+  struct sedzia *next;
+
+};
+
+
+char *wpisz()
+  {
+
+      char *wsk3;
+      int dl;
+      char buf[100];
+
+      gets(buf);
+      dl=strlen(buf);
+      wsk3=(char*)malloc((dl+1)*sizeof(char));
+
+      strcpy(wsk3, buf);
+      return wsk3;
+    }
+
+
+
+struct sedzia* wczytaj_sedz(struct sedzia** wsk)
+{
+    struct sedzia* wsk2;
+    int ident;
+    while(1){
+        printf("Podaj identyfikator sedziego (0 aby zakonczyc): ");
+        scanf("%d", &ident);
+        getchar();
+        if (ident==0) break;
+        else if (*wsk==NULL) {*wsk=(struct sedzia*)malloc(sizeof(struct sedzia)); wsk2=*wsk; (*wsk)->next=NULL;}
+        else if (*wsk!=NULL) {(*wsk)->next=(struct sedzia*)malloc(sizeof(struct sedzia)); *wsk=(*wsk)->next;}
+
+        (*wsk)->identyfik=ident;
+        printf("Podaj nazwisko sedziego: ");
+        (*wsk)->nazwisko=wpisz();
+        (*wsk)->next=NULL;
+    }
+   return wsk2;
+}
+
+int losuj(struct sedzia *wsk)
+{
+    unsigned int i;
+    int j;
+    int liczba_sedz=0,k=1;
+    struct sedzia*pom;
+    pom=wsk;
+    if(wsk!=NULL)
+            {
+                while (wsk!=NULL) {liczba_sedz++; wsk=wsk->next;}
+            }
+    i=rand();
+
+    j=(i % liczba_sedz)+1;
+
+    while(k<j)
+            {
+                pom=pom->next;
+                k++;
+            }
+
+     return (pom->identyfik);
+
+
+}
+
+
+int ** przydziel_sedz(int nd, struct sedzia *wsk)
+{
+    int aaa=1;
+   int i,j,d,warunek;
+   int **wsk2, **wsk3;
+   int *pom;
+
+   j=nd-1;
+   wsk2=(int**)malloc((nd-1)*sizeof(int**));
+   wsk3=wsk2;
+
+srand((unsigned int) time(NULL));
+
+
+
+   for(i=1; i<nd; i++)
+            {
+
+             *wsk2=malloc(j*sizeof(int));
+             pom=*wsk2;
+
+
+                    for(d=1; d<=j; d++)
+                        {
+                            *pom=losuj(wsk);
+
+                            pom++;
+
+                        }
+
+               wsk2++;
+                j--;
+            }
+
+
+    return wsk3;
+}
+
+void wypisz_przydzial(int** tab, int nd, struct sedzia *wsk)
+{
+   int i,j;
+   struct sedzia *wsk2;
+
+   int **wynik;
+   int *pom;
+   wynik=tab;
+   wsk2=wsk;
+
+                for(i=1; i<nd; i++)
+                {
+                            pom=*wynik;
+                       for(j=i+1; j<=nd; j++)
+                            {
+                                while (wsk2->identyfik != *pom) wsk2=wsk2->next;
+                                printf("\nDruzyna nr %d oraz %d - sedzia %s", i, j, wsk2->nazwisko);
+                                wsk2=wsk;
+                                pom++;
+                            }
+                    wynik++;
+                }
+   return;
+}
+
+
+
+int main(void)
+{
+    int nd;
+    struct sedzia* glowny=NULL;
+    struct sedzia* pomocn, *pomocn2;
+    int** przydzial;
+
+    printf("Podaj liczbe druzyn: ");
+    scanf("%d", &nd);
+    getchar();
+
+    pomocn=glowny;
+
+    pomocn=wczytaj_sedz(&pomocn);
+
+    glowny=pomocn2=pomocn;
+
+    przydzial=przydziel_sedz(nd, pomocn2);
+
+    wypisz_przydzial(przydzial, nd, glowny);
+
+return 0;
+}
+

@@ -1,0 +1,188 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+
+
+struct kola
+{
+    char iden;
+    double x;
+    double y;
+    double prom;
+    struct kola* nast;
+};
+
+
+wczytaj()
+{
+  struct kola *glowny;
+  struct kola *pom;
+  char wybor;
+
+  glowny=NULL;
+  pom=NULL;
+
+  while(1){
+  do{
+    printf("Czy wczytac kolo? (t/n): ");
+    scanf("%c", &wybor);
+    getchar();
+    system("cls");
+  }while((wybor!='n')&&(wybor!='t'));
+
+  if (wybor=='n') break;
+
+  printf("Podaj idzentyfikator kola: ");
+      if (glowny==NULL)
+            {
+            pom=(struct kola*)malloc(sizeof(struct kola));
+            glowny=pom;
+            }
+
+      else { pom->nast=(struct kola*)malloc(sizeof(struct kola)); pom=pom->nast;}
+
+      scanf("%c", &pom->iden);
+      getchar();
+
+
+      printf("Podaj wspolrzedna x: ");
+      scanf("%lf", &pom->x);
+      getchar();
+
+      printf("Podaj wspolrzedna y: ");
+      scanf("%lf", &pom->y);
+      getchar();
+            printf("Podaj promien: ");
+      scanf("%lf", &pom->prom);
+      getchar();
+
+
+      pom->nast=NULL;
+
+      system("cls");
+
+
+  }
+
+  return glowny;
+
+}
+
+
+struct wynik
+{
+   int *tab;
+   struct wynik* nast;
+};
+
+struct wynik* obl_wyn(struct kola* wsk)
+{
+  struct wynik *wyn_glowny, * wyn;
+  struct kola *pom;
+  struct kola* tmp;
+  double wsp_x,wsp_y, potegi, odleglosc;
+  int i=0, k=0;
+
+
+  wyn_glowny=NULL;
+  pom=wsk;
+  while(pom!=NULL) { i=i+1; pom=pom->nast; }
+
+
+while (wsk!=NULL)
+        {
+            if (wyn_glowny==NULL)  { wyn=(struct wynik*)malloc(sizeof (struct wynik)); wyn_glowny=wyn; wyn->nast=NULL;}
+            else {wyn->nast=(struct wynik*)malloc(sizeof (struct wynik)); wyn=wyn->nast; wyn->nast=NULL;}
+
+
+
+            tmp=wsk->nast;
+            wyn->tab=malloc(sizeof(int)*(i-1));
+            while(tmp!=NULL)
+                {
+
+                wsp_x=wsk->x-tmp->x;
+                wsp_y=wsk->y-tmp->y;
+
+                wsp_x=pow(wsp_x, 2);
+                wsp_y=pow(wsp_y, 2);
+
+
+                potegi=wsp_x+wsp_y;
+
+                odleglosc=sqrt(potegi);
+
+                if (odleglosc>(wsk->prom+tmp->prom)) { *(wyn->tab+k)=1;}
+                else if (odleglosc<(wsk->prom+tmp->prom)) {  *(wyn->tab+k)=2;}
+                else if (odleglosc==(wsk->prom+tmp->prom)) {  *(wyn->tab+k)=3; }
+                k++;
+                 tmp=tmp->nast;
+                }
+               k=0;
+
+             i--;
+             wsk=wsk->nast;
+
+
+        }
+
+    return wyn_glowny;
+
+}
+
+
+
+wyswietl(struct kola *glowny,struct wynik *wynik)
+{
+    struct kola *wsk=glowny;
+    struct wynik *wyn_pom;
+    int j=0;
+    struct kola *wsk_pom;
+
+
+    while(wsk!=NULL)
+    {
+        wyn_pom=wynik;
+        wsk_pom=wsk->nast;
+        while (wsk_pom!=NULL)
+            {
+               printf("Kola %c i %c : ", wsk->iden, wsk_pom->iden);
+               if (*(wyn_pom->tab+j)==1) printf("SA ROZLACZNE\n");
+               else if (*(wyn_pom->tab+j)==2) printf("PRZECINAJA SIE\n");
+               else if (*(wyn_pom->tab+j)==3) printf("SA STYCZNE\n");
+               j++;
+               wsk_pom=wsk_pom->nast;
+
+            }
+            j=0;
+        wsk=wsk->nast;
+        wynik=wynik->nast;
+    }
+
+
+
+}
+
+
+
+
+int main(void)
+{
+int i;
+struct kola *glowny, *pomocniczy;
+struct wynik *wyni;
+glowny=wczytaj();
+pomocniczy=glowny;
+
+wyni=obl_wyn(pomocniczy);
+
+
+
+wyswietl(glowny, wyni);
+
+
+
+    return 0;
+}
+

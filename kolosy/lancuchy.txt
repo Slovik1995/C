@@ -1,0 +1,102 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+
+
+char * wczytaj()
+{
+    char* wsk;
+    int dlugosc;
+    char bufor[100];
+    printf("Podaj wyraz: ");
+    gets(bufor);
+
+    dlugosc=strlen(bufor);
+    wsk=malloc((dlugosc+1)*sizeof(char));
+    strcpy(wsk, bufor);
+    return wsk;
+}
+
+char** utworz_tablice(int liczba)
+{
+  int i=1;
+  char** wsk;
+  char** poczatek;
+  char** pom;
+
+  wsk=(char*)malloc(liczba*sizeof(char*));
+
+  poczatek=wsk;
+  pom=wsk;
+  for(i=1; i<=liczba; i++)
+        {
+
+           *pom=wczytaj();
+
+            pom=pom+1;
+        }
+
+  return poczatek;
+
+}
+
+
+void wypisz(char **wsk,int liczba)
+{
+char **pom=wsk;
+    int i;
+    printf("\n");
+    for (i=1; i<=liczba; i++)
+            {
+
+                printf("%s, ", *pom);
+                pom++;
+            }
+
+    return;
+}
+
+void alfabet(char **tmp, char **min, char **max, int liczba)
+{
+
+  int i;
+
+  *max=*min=*tmp;
+
+  for(i=0; i<liczba; i++)
+        {
+
+            if (strcmp(tolower(*tmp), tolower(*min))<0) *min=*tmp;
+            if (strcmp(tolower(*tmp), tolower(*max))>0) *max=*tmp; 
+            tmp++;
+
+        }
+
+
+
+}
+
+
+int main(void)
+{
+int liczba_wyr;
+char **glowny;
+char *max, *min;
+char **pom;
+
+
+printf("Podaj liczbe wyrazow: ");
+
+scanf("%d", &liczba_wyr);
+getchar();
+glowny=utworz_tablice(liczba_wyr);
+
+
+wypisz(glowny, liczba_wyr);
+pom=glowny;
+alfabet(pom, &min, &max, liczba_wyr);
+printf("\n\nNajmniejszy alfabetycznie wyraz to %s a najwiekszy to %s.\n\n", min, max);
+
+    return 0;
+}
+

@@ -1,0 +1,210 @@
+#include<stdlib.h>
+#include<stdio.h>
+
+struct wezel {
+
+int numer;
+struct wezel* nast;
+struct wezel* poprz;
+
+};
+
+void dodaj_pocz(struct wezel**pocz)
+{
+    int liczba;
+    struct wezel* pom;
+    printf("Podaj liczbe: ");
+    scanf("%d", &liczba);
+    getchar();
+
+    if (*pocz==NULL)
+        {
+        (*pocz)=malloc(sizeof(struct wezel));
+        (*pocz)->numer=liczba;
+        (*pocz)->nast=NULL;
+        (*pocz)->poprz=NULL;
+
+        }
+     else if (*pocz!=NULL)
+     {
+         pom=malloc(sizeof(struct wezel));
+         pom->numer=liczba;
+         pom->nast=*pocz;
+         (*pocz)->poprz=pom;
+         pom->poprz=NULL;
+         *pocz=(*pocz)->poprz;
+     }
+
+
+}
+
+void dodaj_kon(struct wezel**pocz)
+{
+    int liczba;
+    struct wezel* pom;
+    struct wezel * pom2;
+
+    printf("Podaj liczbe: ");
+    scanf("%d", &liczba);
+    getchar();
+
+    if (*pocz==NULL)
+    {
+        (*pocz)=malloc(sizeof(struct wezel));
+        (*pocz)->numer=liczba;
+        (*pocz)->nast=NULL;
+        (*pocz)->poprz=NULL;
+
+    }
+    else if (*pocz!=NULL)
+    {
+        pom=*pocz;
+        while (pom->nast !=NULL) pom=pom->nast;
+        pom->nast=malloc(sizeof(struct wezel));
+        pom2=pom;
+        pom=pom->nast;
+        pom->poprz=pom2;
+        pom->nast=NULL;
+        pom->numer=liczba;
+
+    }
+}
+
+void wyswietl(struct wezel * pocz)
+{
+    while (pocz!=NULL)
+    {
+        printf("%d ", pocz->numer);
+        pocz=pocz->nast;
+    }
+
+}
+
+void wstaw_srodek(struct wezel** pocz)
+{
+    int liczba;
+    struct wezel* pom, *pom2,*pom3;
+    printf("Podaj liczbe: ");
+    scanf("%d", &liczba);
+    getchar();
+
+    if (*pocz==NULL)
+     {
+        (*pocz)=malloc(sizeof(struct wezel));
+        (*pocz)->numer=liczba;
+        (*pocz)->nast=NULL;
+        (*pocz)->poprz=NULL;
+
+     }
+    else if (*pocz!=NULL)
+    {
+        if ((*pocz)->numer>liczba)
+        {
+            pom=malloc(sizeof(struct wezel));
+            pom->numer=liczba;
+            pom->nast=*pocz;
+            (*pocz)->poprz=pom;
+            pom->poprz=NULL;
+            (*pocz)=pom;
+        }
+        else
+        {
+            pom=*pocz;
+            pom2=pom;
+            while ((pom!=NULL)&&(pom->numer<liczba)) {pom2=pom; pom=pom->nast;}
+
+            if (pom==NULL)
+                {
+                pom=malloc(sizeof(struct wezel));
+                pom->numer=liczba;
+                pom->nast=NULL;
+                pom->poprz=pom2;
+                pom2->nast=pom;
+                }
+
+            else if (pom !=NULL)
+                {
+                pom3=malloc(sizeof(struct wezel));
+                pom3->numer=liczba;
+                pom3->nast=pom;
+                pom->poprz=pom3;
+                pom2->nast=pom3;
+                pom3->poprz=pom2;
+                }
+        }
+
+
+    }
+
+}
+
+void usun_pocz(struct wezel **pocz)
+{
+    if (*pocz!=NULL)
+    {
+        *pocz=(*pocz)->nast;
+        (*pocz)->poprz=NULL;
+    }
+}
+
+void usun_kon(struct wezel**pocz)
+{
+    struct wezel*pom,*pom2;
+    if (*pocz!=NULL)
+    {
+        pom=*pocz;
+        pom2=pom;
+        if (pom->nast==NULL) pom=NULL;
+
+        else
+            {
+               while(pom->nast!=NULL) {pom2=pom; pom=pom->nast;}
+               pom2->nast=NULL;
+            }
+    }
+
+
+}
+
+
+
+int main(void)
+{
+struct wezel *poczatek=NULL, *bierzacy=NULL, *koniec=NULL;
+int wybor;
+
+do{
+wyswietl(poczatek);
+printf("\n\n1.Dodaj poczatek\n2.Dodaj koniec\n3.Dodaj w srodku\n4.Usun poczatek\n5.Usun koniec\n");
+scanf("%d", &wybor);
+getchar();
+
+switch (wybor)
+        {
+            case 1: {
+                    dodaj_pocz(&poczatek);
+                    break;
+                    }
+            case 2: {
+                    dodaj_kon(&poczatek);
+                    break;
+                    }
+            case 3: {
+                     wstaw_srodek(&poczatek);
+                     break;
+                    }
+            case 4: {
+                    usun_pocz(&poczatek);
+                    break;
+                    }
+            case 5: {
+                    usun_kon(&poczatek);
+                    break;
+                    }
+
+        }
+
+system("cls");
+}while(1);
+    return 0;
+}

@@ -1,0 +1,43 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <conio.h>
+#include <ctype.h>
+
+
+int main(void)
+{
+int a, b, x, y, i, j, tem;
+printf("Podaj pierwszy zakres tabliczki (np 3 10):\n");
+scanf("%d %d", &a, &b);
+printf("Podaj drugi zakres: \n");
+scanf("%d %d", &x, &y);
+printf("\n\n\n     ");
+for (i=a; i<=b; i++)
+{
+  if (i<10) printf("%d    ", i);
+  else if (i>9 && i<100) printf("%d   ", i);
+    else if (i>99 && i<1000) printf("%d  ", i);
+    else if (i>999 && i<1000) printf("%d ", i);
+}
+printf("\n\n");
+for (i=x; i<=y; i++)
+{
+    if (x<10) printf("%d    ", i);
+    else if (x>9 && x<100) printf("%d   " ,i);
+    else if (x>99 && x<1000) printf("%d  ", i);
+    for (j=a; j<=b; j++ )
+    {
+
+
+    tem=i*j;
+    printf("%ld", tem);
+    if(tem<10) printf("    ");
+    else if (tem>9 && tem<100) printf("   ");
+    else if (tem>99 && tem<1000) printf("  ");
+    else if (tem>999 && tem<1000) printf(" ");
+    }
+    printf("\n");
+}
+
+
+}

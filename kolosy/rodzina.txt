@@ -1,0 +1,185 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct osoba
+{
+   char *nazwisko;
+   int rok;
+   int liczba_dzieci;
+   struct osoba* dzieci;
+   struct osoba* poprzedni;
+   struct osoba* rodzenstwo;
+};
+
+void dodaj_dziecko(struct osoba **wsk, char * nazw)
+{
+    char wybor;
+    int lata;
+
+
+
+    printf("Podaj rok urodzenia: ");
+    scanf("%d", &lata);
+    getchar();
+    system("cls");
+            *wsk=(struct osoba*)malloc(sizeof(struct osoba));
+
+            (*wsk)->nazwisko=nazw;
+            (*wsk)->rok=lata;
+            (*wsk)->dzieci=NULL;
+            (*wsk)->rodzenstwo=NULL;
+            (*wsk)->liczba_dzieci=NULL;
+
+
+    printf("Czy chcesz dodac kolejne dziecko? (t/n)");
+    do {
+        scanf("%c", &wybor);
+        getchar();
+       system("cls");
+       }
+
+    while ((wybor!='t')&&(wybor!='n'));
+
+    if (wybor=='t') { dodaj_dziecko(&(*wsk)->rodzenstwo, nazw); };
+
+}
+
+
+int liczba_dzieci(struct osoba* wsk)
+{
+    int i=0;
+    while(wsk!=NULL) { i++; wsk=wsk->rodzenstwo;}
+    return i;
+
+
+}
+
+struct osoba * wyswietl_dzieci(struct osoba*wsk)
+{
+    printf("%s, rok %d\n", wsk->nazwisko, wsk->rok);
+    wsk=wsk->rodzenstwo;
+    return wsk;
+
+}
+
+void wyswietl_rodzic(struct osoba *wsk)
+{
+    int j=1;
+    while(j<5){
+
+    struct osoba* pom;
+    pom=wsk->dzieci;
+    printf("-------------------------\n");
+  printf("Rodzic to %s", wsk->nazwisko);
+
+  printf(", urodzil sie w %d roku", wsk->rok);
+
+  pom=wsk->dzieci;
+  if ((wsk->liczba_dzieci)!=NULL)
+            {
+                printf(", ma %d dzieci, a jego dzieci to:\n", wsk->liczba_dzieci );
+                while (pom!=NULL)
+                {
+
+                   pom=wyswietl_dzieci(pom);
+                }
+            }
+  else printf(", ma 0 dzieci.\n");
+
+  wsk=wsk+1;
+  j++;
+    }
+
+}
+
+int najwiecej_dzieci(struct osoba **wsk)
+{
+   struct osoba *pom;
+   int i=0,j=0,max=0;
+   pom=*wsk;
+   while (j<4)
+        {
+        if ((pom)->liczba_dzieci==NULL) i=1;
+
+        else if (max<(pom)->liczba_dzieci)
+            {
+                *wsk=pom;
+                 max=pom->liczba_dzieci;
+                 
+            }
+        pom=pom+1;
+        j++;
+        
+        }
+        
+    return i;
+}
+
+int main(void)
+{
+ int k,zero_dzieci;
+ char wybor2;
+ struct osoba *pomocniczy, *pomocniczy2;
+ struct osoba niespokrewnieni[4];
+
+
+
+ niespokrewnieni[0].nazwisko="Slowik";
+ niespokrewnieni[0].rok=1960;
+ niespokrewnieni[0].poprzedni=niespokrewnieni[0].nazwisko;
+ niespokrewnieni[0].dzieci=NULL;
+
+ niespokrewnieni[1].nazwisko="Nowak";
+ niespokrewnieni[1].rok=1970;
+ niespokrewnieni[1].poprzedni=niespokrewnieni[1].nazwisko;
+ niespokrewnieni[1].dzieci=NULL;
+
+ niespokrewnieni[2].nazwisko="Kluska";
+ niespokrewnieni[2].rok=1980;
+ niespokrewnieni[2].poprzedni=niespokrewnieni[2].nazwisko;
+ niespokrewnieni[2].dzieci=NULL;
+
+ niespokrewnieni[3].nazwisko="Kowalski";
+ niespokrewnieni[3].rok=1990;
+ niespokrewnieni[3].poprzedni=niespokrewnieni[3].nazwisko;
+ niespokrewnieni[3].dzieci=NULL;
+
+for(k=0; k<4; k++)
+    {
+        printf("Czy chcesz dodac dziecko osoby %s? (t/n): ", niespokrewnieni[k].nazwisko);
+        scanf("%c", &wybor2);
+        getchar();
+        system("cls");
+        if (wybor2=='t')
+                {
+                dodaj_dziecko(&(niespokrewnieni[k].dzieci), niespokrewnieni[k].nazwisko);
+
+                if (k<3) printf("Teraz nastepna osoba.\n");
+                }
+    }
+
+for(k=0; k<4; k++)
+    niespokrewnieni[k].liczba_dzieci=liczba_dzieci(niespokrewnieni[k].dzieci);
+
+
+for (k=0; k<4; k++);
+{
+
+wyswietl_rodzic(niespokrewnieni);
+}
+printf("-------------------------\n");
+
+pomocniczy2=niespokrewnieni;
+
+zero_dzieci=najwiecej_dzieci(&pomocniczy2);
+
+
+printf("Najwiecej dzieci ma %s\n", pomocniczy2->nazwisko);
+
+printf("Czy ktos ma zero dzieci: ");
+(zero_dzieci==1) ? printf("TAK") : printf("NIE");
+getchar();
+
+    return 0;
+}
+

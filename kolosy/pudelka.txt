@@ -1,0 +1,168 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+
+struct pudelko
+{
+   char nazwa;
+   int x;
+   int y;
+   int z;
+
+};
+
+struct lista
+{
+  struct pudelko pud;
+  struct lista *nast;
+};
+
+struct lista* wczytaj()
+{
+    struct lista *glowny, *wsk;
+    glowny=NULL;
+    char wybor;
+
+    while (1){
+        printf("Czy chcesz dodac pudelko? (t/n): ");
+        do{
+            scanf("%c", &wybor);
+            getchar();
+            system("cls");
+        }while((wybor!='n')&&(wybor!='t'));
+
+        if (wybor=='n') break;
+
+
+        if (glowny==NULL) { wsk=(struct lista*)malloc(sizeof(struct lista)); glowny=wsk;}
+        else { wsk->nast=(struct lista*)malloc(sizeof(struct lista)); wsk=wsk->nast;}
+
+        printf("Podaj identyfikator: ");
+        scanf("%c", &wsk->pud.nazwa);
+        getchar();
+
+        printf("Podaj wysokosc: ");
+        scanf("%d", &wsk->pud.x);
+        getchar();
+
+        printf("Podaj szerokosc: ");
+        scanf("%d", &wsk->pud.y);
+        getchar();
+
+        printf("Podaj dlugosc: ");
+        scanf("%d", &wsk->pud.z);
+        getchar();
+        system("cls");
+
+    }
+    if (glowny!=NULL) wsk->nast=NULL;
+    return glowny;
+}
+
+
+
+char *porownaj(struct lista* glowny)
+{
+    int  min_gl, sr_gl, max_gl, min_pom, sr_pom, max_pom;
+   int i=0;
+   char *wynik_gl, *wynik;
+   struct lista *pomoc, *wsk;
+
+   wsk=pomoc=glowny;
+
+   while(pomoc!=NULL) { i=i+1; pomoc=pomoc->nast; }
+
+   pomoc=glowny;
+   wynik=(char*)malloc((sizeof(char)*i));
+   wynik_gl=wynik;
+
+   while(wsk!=NULL)
+        {
+            pomoc=wsk->nast;
+
+            (wsk->pud.x < wsk->pud.y) ? (min_gl=wsk->pud.x) : (min_gl=wsk->pud.y);
+
+            (wsk->pud.z < min_gl) ? (min_gl=wsk->pud.z) : (1);
+            (wsk->pud.x > wsk->pud.y) ? (max_gl=wsk->pud.x) : (max_gl=wsk->pud.y);
+            (wsk->pud.z > max_gl) ? (max_gl=wsk->pud.z) : (1);
+
+             if (((min_gl==wsk->pud.x)&&(max_gl==wsk->pud.y))||((min_gl==wsk->pud.y)&&(max_gl==wsk->pud.x))) sr_gl=wsk->pud.z;
+             else if (((min_gl==wsk->pud.x)&&(max_gl==wsk->pud.z))||((min_gl==wsk->pud.z)&&(max_gl==wsk->pud.x))) sr_gl=wsk->pud.y;
+             else sr_gl=wsk->pud.x;
+
+
+
+            while (pomoc!=NULL)
+                {
+                  if (((min_pom==pomoc->pud.x)&&(max_pom==pomoc->pud.y))||((min_pom==pomoc->pud.y)&&(max_pom==pomoc->pud.x))) sr_pom=pomoc->pud.z;
+                  else if (((min_pom==pomoc->pud.x)&&(max_pom==pomoc->pud.z))||((min_pom==pomoc->pud.z)&&(max_pom==pomoc->pud.x))) sr_pom=pomoc->pud.y;
+                  else sr_pom=pomoc->pud.x;
+
+                if ((min_pom<min_gl)&&(sr_pom<sr_gl)&&(max_pom<max_gl)) {*wynik='>'; wynik++;}
+                else if ((min_pom>min_gl)&&(sr_pom>sr_gl)&&(max_pom>max_gl)) {*wynik='<'; wynik++;}
+                else {*wynik='X'; wynik++;}
+
+                pomoc=pomoc->nast;
+
+                }
+
+
+
+            wsk=wsk->nast;
+        }
+
+
+   return wynik_gl;
+
+}
+
+wyswietl(char* wynik, struct lista* glowny)
+{
+    int i=0;
+    struct lista *wsk, *pom;
+    wsk=glowny;
+
+
+    while (wsk!=NULL)
+        {
+            pom=wsk->nast;
+            while (pom!=NULL)
+                {
+                  printf("%c %c %c\n", wsk->pud.nazwa, *wynik, pom->pud.nazwa);
+                  wynik++;
+                  i++;
+                  pom=pom->nast;
+                }
+
+           wsk=wsk->nast;
+        }
+
+printf("\nNacisnii enter");
+getchar();
+
+
+
+}
+
+
+
+int main(void)
+{
+ char * wynik;
+ struct lista* glowny=NULL;
+while (1)
+ {
+
+  glowny=wczytaj();
+  wynik=porownaj(glowny);
+  wyswietl(wynik, glowny);
+
+  system("cls");
+
+ free(glowny);
+ free(wynik);
+ }
+    return 0;
+}
+

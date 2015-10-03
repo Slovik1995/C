@@ -1,0 +1,96 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+
+struct lista
+{
+  int dlugosc;
+  double *tab;
+
+  struct lista* nast;
+
+};
+
+struct lista* wczytaj()
+{
+   struct lista *wsk;
+   int dl_ciagu,i;
+
+   printf("Podaj liczbe liczb w ciagu(0 na pierwszej pozycji konczy wczytywanie) : ");
+   scanf("%d", &dl_ciagu);
+   getchar();
+
+    if (dl_ciagu==0) { wsk=NULL; return wsk; }
+
+    wsk=(struct lista*)malloc(sizeof(struct lista));
+    wsk->nast=NULL;
+
+    wsk->dlugosc=dl_ciagu;
+    wsk->tab=(double*)malloc(sizeof(double)*dl_ciagu);
+   for (i=0; i<dl_ciagu; i++)
+        {
+            scanf("%lf", &wsk->tab[i]);
+            getchar();
+        }
+
+
+
+
+   return wsk;
+
+}
+
+void znajdz(struct lista *glowny, double  *min, double *max,struct lista** ptr_min,struct lista **ptr_max)
+{
+    double suma;
+    int i;
+    struct lista* pom;
+
+    *ptr_min=*ptr_max=glowny;
+    *min=*max=0;
+    pom=glowny;
+
+    while (pom!=NULL)
+        {
+           suma=0;
+           for (i=0; i<pom->dlugosc; i++)
+                {
+                    suma+=pom->tab[i];
+
+                }
+             suma=(suma/pom->dlugosc);
+            if (suma<*min) { *min=suma; *ptr_min=pom; }
+            if (suma>*max) { *max=suma; *ptr_max=pom; }
+            pom=pom->nast;
+        }
+
+
+
+
+return;
+}
+
+
+int main(void)
+{
+double min, max;
+struct lista *glowny, *ptr_min, *ptr_max, *wsk;
+wsk=wczytaj();
+glowny=wsk;
+while(1)
+    {
+
+     if (wsk==NULL) break;
+     wsk->nast=wczytaj();
+     wsk=wsk->nast;
+    }
+
+znajdz(glowny, &min, &max, &ptr_min, &ptr_max);
+
+printf("Najwieksza srednia: %lf   (dla %d liczb)\n", max, ptr_max->dlugosc);
+printf("Najmniejsza srednia: %lf   (dla %d liczb)\n\n", min, ptr_min->dlugosc);
+
+return 0;
+}
+
